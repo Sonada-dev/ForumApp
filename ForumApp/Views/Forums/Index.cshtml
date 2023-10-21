@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ForumApp.Models.Forum>
+
+@{
+    ViewData["Title"] = "Главная";
+}
+
+<h1>Главная</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<h4>Список форумов</h4>
+
+<div class="forumList">
+    <div class="forumListItems">
+        <hr/>
+        @foreach (var item in Model)
+        {
+            if(item.ParentForum is null)
+            {
+                <div class="forumItem">
+                    <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
+                </div>
+                <hr />
+            }
+        }
+    </div>
+</div>
+
+@* <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Parent_Forum_Id)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Parent_Forum_Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table> *@

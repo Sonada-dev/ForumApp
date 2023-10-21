@@ -1,0 +1,49 @@
+﻿@using System.Security.Claims
+@model ForumApp.Models.TopicViewModel
+
+
+@{
+    ViewData["Title"] = Model.Topic.Title;
+}
+
+<h1>@Model.Topic.Title</h1>
+
+<div class="topicMain">
+    <hr />
+    <div class="topicMainBlock">
+        <p>@Model.Topic.Description</p>
+    </div>
+
+    <div class="topicCreator">
+        <a asp-action="" asp-route-id="Topic.Id">@Model.Topic.AppIdentityUser!.UserName</a>
+    </div>
+</div>
+<div class="topicComments">
+    <h4>Комментарии</h4>
+        <hr />
+        <form asp-controller="Comments" asp-action="Create" method="post">
+        <input type="hidden" asp-for="Comment!.Topic_Id" value="@Model.Topic.Id" />
+        <input type="hidden" asp-for="Comment!.Created_By" value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" />
+            <div class="form-group">
+                <label asp-for="Comment!.Content">Content:</label>
+                <textarea asp-for="Comment!.Content" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    @if (Model.Topic.Comments is not null)
+    {
+        foreach (var item in Model.Topic.Comments)
+        {
+            <div class="topicCommentsItem">
+                <a asp-action="" asp-route-id="@Model.Topic.Id">@item.User!.UserName</a>
+                <p>@item.Created_At</p>
+                <p>@item.Content</p>
+            </div>
+            <hr />
+        }
+    }
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="Topic.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
