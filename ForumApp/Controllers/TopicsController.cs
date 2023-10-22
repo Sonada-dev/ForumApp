@@ -52,6 +52,10 @@ namespace ForumApp.Controllers
         // GET: Topics/Create
         public IActionResult Create()
         {
+            int forumId = int.Parse(Request.Query["forumId"]!);
+
+            // Передайте forumId в представление
+            ViewData["Forum_Id"] = forumId;
             return View();
         }
 

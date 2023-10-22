@@ -8,12 +8,11 @@
 
 <div class="forumList">
     <div class="forumListItems">
-        
+        <h4>Список форумов</h4>
+        <a asp-action="Create" asp-route-id="@Model.Id">Создать форум</a>
+        <hr />
         @if (Model.ChildForums is not null)
         {
-            <h4>Список форумов</h4>
-            <hr />
-
             @foreach (var item in Model.ChildForums)
             {
                 <div class="forumItem">
@@ -29,11 +28,11 @@
 
 <div class="forumList">
     <div class="topicListItems">
+        <h4>Темы</h4>
+        <a asp-controller="Topics" asp-action="Create" asp-route-forumId="@Model.Id">Создать тему</a>
+        <hr />
         @if (Model.Topics is not null)
         {
-            <h4>Темы</h4>
-            <hr />
-
             @foreach (var item in Model.Topics)
             {
                 <div class="topicItem">

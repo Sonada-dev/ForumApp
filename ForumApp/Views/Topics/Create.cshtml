@@ -1,4 +1,5 @@
-﻿@model ForumApp.Models.Topic
+﻿@using System.Security.Claims
+@model ForumApp.Models.Topic
 
 @{
     ViewData["Title"] = "Create";
@@ -23,14 +24,10 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Forum_Id" class="control-label"></label>
-                <input asp-for="Forum_Id" class="form-control" />
-                <span asp-validation-for="Forum_Id" class="text-danger"></span>
+                <input type="hidden" asp-for="Forum_Id" value="@ViewData["Forum_Id"]" class="form-control" />
             </div>
             <div class="form-group">
-                <label asp-for="Created_By" class="control-label"></label>
-                <input asp-for="Created_By" class="form-control" />
-                <span asp-validation-for="Created_By" class="text-danger"></span>
+                <input type="hidden" asp-for="Created_By" value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" class="form-control" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -48,9 +48,9 @@ namespace ForumApp.Controllers
         }
 
         // GET: Forums/Create
-        public IActionResult Create()
+        public IActionResult Create(int? id)
         {
-            return View();
+            return View(new ForumViewModel() { ParentForum_Id = id});
         }
 
         // POST: Forums/Create
@@ -58,15 +58,15 @@ namespace ForumApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Parent_Forum_Id")] Forum forum)
+        public async Task<IActionResult> Create([Bind("Id,Title,Parent_Forum_Id")] Forum newForum)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(forum);
+                _context.Add(newForum);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(forum);
+            return View(new ForumViewModel() { ParentForum_Id = newForum.Id });
         }
 
         // GET: Forums/Edit/5

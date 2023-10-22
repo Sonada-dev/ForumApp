@@ -21,22 +21,38 @@
 <div class="topicComments">
     <h4>Комментарии</h4>
         <hr />
+    @if (this.User.Identity!.IsAuthenticated)
+    {
         <form asp-controller="Comments" asp-action="Create" method="post">
-        <input type="hidden" asp-for="Comment!.Topic_Id" value="@Model.Topic.Id" />
-        <input type="hidden" asp-for="Comment!.Created_By" value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" />
+            <input type="hidden" asp-for="Comment!.Topic_Id" value="@Model.Topic.Id" />
+            <input type="hidden" asp-for="Comment!.Created_By" value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" />
             <div class="form-group">
                 <label asp-for="Comment!.Content">Content:</label>
                 <textarea asp-for="Comment!.Content" class="form-control"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+    }
+    else
+    {
+        <p>Войдите в аккаунт чтобы оставить комментарий</p>
+    }
     @if (Model.Topic.Comments is not null)
     {
         foreach (var item in Model.Topic.Comments)
         {
-            <div class="topicCommentsItem">
-                <a asp-action="" asp-route-id="@Model.Topic.Id">@item.User!.UserName</a>
-                <p>@item.Created_At</p>
+            <div class="commentsItem">
+                <div class="commentsItemHead">
+                    <div class="commentInfo">
+                        <a asp-action="" asp-route-id="@Model.Topic.Id">@item.User!.UserName</a>
+                        <p>@item.Created_At</p>
+                    </div>
+                    <div class="commentActions">
+                        <form method="post" asp-controller="Comments" asp-action="Delete" asp-route-id="@item.Id">
+                            <button type="submit">Удалить</button>
+                        </form>
+                    </div>
+                </div>
                 <p>@item.Content</p>
             </div>
             <hr />
