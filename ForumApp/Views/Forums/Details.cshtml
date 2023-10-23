@@ -9,7 +9,7 @@
 <div class="forumList">
     <div class="forumListItems">
         <h4>Список форумов</h4>
-        <a asp-action="Create" asp-route-id="@Model.Id">Создать форум</a>
+        <a asp-action="Create" asp-route-pForumId="@Model.Id">Создать форум</a>
         <hr />
         @if (Model.ChildForums is not null)
         {

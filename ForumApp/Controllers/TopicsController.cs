@@ -52,10 +52,15 @@ namespace ForumApp.Controllers
         // GET: Topics/Create
         public IActionResult Create()
         {
-            int forumId = int.Parse(Request.Query["forumId"]!);
+            int? forumId = null;
 
-            // Передайте forumId в представление
+            if (Request.Query.ContainsKey("forumId") && int.TryParse(Request.Query["forumId"], out int parsedForumId))
+            {
+                forumId = parsedForumId;
+            }
+
             ViewData["Forum_Id"] = forumId;
+
             return View();
         }
 
@@ -70,7 +75,7 @@ namespace ForumApp.Controllers
             {
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Details), new {id = topic.Id});
             }
             return View(topic);
         }
