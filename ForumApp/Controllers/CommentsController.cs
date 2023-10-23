@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ForumApp.Data;
 using ForumApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ForumApp.Controllers
 {
@@ -17,30 +18,6 @@ namespace ForumApp.Controllers
         public CommentsController(ApplicationDbContext context)
         {
             _context = context;
-        }
-
-        // GET: Comments
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.Comment.ToListAsync());
-        }
-
-        // GET: Comments/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var comment = await _context.Comment
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (comment == null)
-            {
-                return NotFound();
-            }
-
-            return View(comment);
         }
 
         // GET: Comments/Create
@@ -60,9 +37,8 @@ namespace ForumApp.Controllers
             {
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(TopicsController.Details), "Topics", new {id = comment.Topic_Id});
             }
-            return View(comment);
+            return RedirectToAction(nameof(TopicsController.Details), "Topics", new { id = comment.Topic_Id });
         }
 
         // GET: Comments/Edit/5
@@ -146,7 +122,7 @@ namespace ForumApp.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(TopicsController.Details), "Topics", new { id = comment!.Topic_Id });
         }
 
         private bool CommentExists(int id)
