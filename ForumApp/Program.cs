@@ -44,10 +44,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Forums}/{action=Index}/{id?}");
-app.MapControllerRoute(
-    name: "TopicsRoute",
-    pattern: "Topics/Create/{forumId}",
-    defaults: new { controller = "Topics", action = "Create" });
+//app.MapControllerRoute(
+//    name: "TopicsRoute",
+//    pattern: "Topics/Create/{forumId}",
+//    defaults: new { controller = "Topics", action = "Create" });
 app.MapRazorPages();
 
 app.Run();
