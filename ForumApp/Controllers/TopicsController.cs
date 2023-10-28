@@ -161,7 +161,7 @@ namespace ForumApp.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(ForumsController.Details),"Forums", new {id = topic!.Forum_Id});
         }
 
         private bool TopicExists(int id)

@@ -73,7 +73,7 @@ namespace ForumApp.Controllers
             {
                 _context.Add(forum);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new {id = forum.Parent_Forum_Id});
+                return RedirectToAction(forum.Parent_Forum_Id is not null ? nameof(Details) : nameof(Index), new {id = forum.Parent_Forum_Id});
             }
             return View();
         }
