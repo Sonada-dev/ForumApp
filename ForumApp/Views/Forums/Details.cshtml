@@ -1,4 +1,5 @@
-﻿@model ForumApp.Models.Forum
+﻿@using System.Security.Claims
+@model ForumApp.Models.Forum
 
 @{
     ViewData["Title"] = @Html.DisplayFor(model => model.Title);
@@ -9,7 +10,10 @@
 <div class="forumList">
     <div class="forumListItems">
         <h4>Список форумов</h4>
-        <a asp-action="Create" asp-route-pForumId="@Model.Id">Создать форум</a>
+        @if (this.User.Identity!.IsAuthenticated && this.User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" asp-route-pForumId="@Model.Id">Создать форум</a>
+        }
         <hr />
         @if (Model.ChildForums is not null)
         {
@@ -17,31 +21,34 @@
             {
                 <div class="forumItem">
                     <a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
-                    <div class="itemActions">
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@item.Id">Удалить</button>
-                    </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="confirmDeleteModal-@item.Id" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel-@item.Id" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="confirmDeleteModalLabel-@item.Id">Подтверждение удаления</h5>
-                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    Вы уверены, что хотите удалить этот форум?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                    <form method="post" asp-controller="Forums" asp-action="Delete" asp-route-id="@item.Id">
-                                        <button type="submit" class="btn btn-danger">Удалить</button>
-                                    </form>
+                    @if(this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin"))
+                    {
+                        <div class="itemActions">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@item.Id">Удалить</button>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="confirmDeleteModal-@item.Id" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel-@item.Id" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmDeleteModalLabel-@item.Id">Подтверждение удаления</h5>
+                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Вы уверены, что хотите удалить этот форум?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                        <form method="post" asp-controller="Forums" asp-action="Delete" asp-route-id="@item.Id">
+                                            <button type="submit" class="btn btn-danger">Удалить</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 </div>
                 <hr />
             }
@@ -54,7 +61,10 @@
 <div class="forumList">
     <div class="topicListItems">
         <h4>Темы</h4>
-        <a asp-controller="Topics" asp-action="Create" asp-route-forumId="@Model.Id">Создать тему</a>
+        @if (this.User.Identity!.IsAuthenticated)
+        {
+            <a asp-controller="Topics" asp-action="Create" asp-route-forumId="@Model.Id">Создать тему</a>
+        }
         <hr />
         @if (Model.Topics is not null)
         {
@@ -63,31 +73,34 @@
                 <div class="topicItem">
                     <a asp-controller="Topics" asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Title)</a>
                     <p>@Html.DisplayFor(modelItem => item.AppIdentityUser!.Email)</p>
-                    <div class="itemActions">
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@item.Id">Удалить</button>
-                    </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id="confirmDeleteModal-@item.Id" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel-@item.Id" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="confirmDeleteModalLabel-@item.Id">Подтверждение удаления</h5>
-                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    Вы уверены, что хотите удалить эту тему?
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                                    <form method="post" asp-controller="Topics" asp-action="Delete" asp-route-id="@item.Id">
-                                        <button type="submit" class="btn btn-danger">Удалить</button>
-                                    </form>
+                    @if (this.User.Identity.IsAuthenticated && this.User.IsInRole("Admin") || item.Created_By == @User.FindFirst(ClaimTypes.NameIdentifier)?.Value)
+                    {
+                        <div class="itemActions">
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal-@item.Id">Удалить</button>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="confirmDeleteModal-@item.Id" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModalLabel-@item.Id" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="confirmDeleteModalLabel-@item.Id">Подтверждение удаления</h5>
+                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Вы уверены, что хотите удалить эту тему?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                        <form method="post" asp-controller="Topics" asp-action="Delete" asp-route-id="@item.Id">
+                                            <button type="submit" class="btn btn-danger">Удалить</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 </div>
                 <hr />
             }

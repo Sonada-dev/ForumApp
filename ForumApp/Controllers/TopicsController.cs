@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ForumApp.Data;
 using ForumApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ForumApp.Controllers
 {
@@ -20,6 +21,7 @@ namespace ForumApp.Controllers
         }
 
         // GET: Topics
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Topic.ToListAsync());
