@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Identity.Client;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +11,7 @@ namespace ForumApp.Models
         public int Id { get; set; }
 
         [Required]
+        [Display(Name = "Название темы")]
         public required string Title { get; set; }
 
         [Required]
